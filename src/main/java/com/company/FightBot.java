@@ -3,26 +3,24 @@ package com.company;
 import com.company.backend.Player;
 import com.company.backend.Race;
 import com.company.frontend.ButtonMaker;
+import com.company.frontend.Commands;
+import com.company.frontend.TextCommander;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 import java.util.*;
 
-import static com.company.ButtonText.*;
-import static com.company.backend.Race.*;
-import static java.lang.Math.toIntExact;
+import static com.company.SendMessageText.*;
 
 
 public class FightBot extends TelegramLongPollingBot {
-    Map<Long, Player> players;
+    Map<Integer, Player> players;
 
     FightBot() {
         super();
@@ -35,45 +33,39 @@ public class FightBot extends TelegramLongPollingBot {
         System.out.println(update.toString());
 
 
-        if (update.hasMessage()) {
-            if (!players.containsKey(update.getMessage().getChatId())) {
-                startMess(update);
-            }
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            TextCommander textCommander = new TextCommander(update, players, this);
+            textCommander.sendReplyMessage();
+
         } else if (update.hasCallbackQuery()) {
-            if (Race.isRace(update.getCallbackQuery().getData())){
-                startCallbackHandler(update);
+            final String dataOfQuery = update.getCallbackQuery().getData();
+            EditMessageText editMessageText = createEditMessage(update, "");
+            if (Race.isRace(dataOfQuery)) {
+                Race race = Race.valueOf(update.getCallbackQuery().getData());
+                int playerId = update.getCallbackQuery().getFrom().getId();
+                players.get(playerId).setRace(race);
+                editMessageText = createEditMessage(update, answerChooseRace);
+            }else if (cancel.equals(dataOfQuery)){
+                editMessageText = createEditMessage(update, canselOperation);
             }
+            sendMessageInChat(editMessageText);
         }
     }
 
 
-    private void startMess(Update update) {
-        long chatId = update.getMessage().getChatId();
-        String name = update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getLastName();
-        players.put(chatId, new Player(chatId, name, false));
-        SendMessage message = new SendMessage()
-                .setChatId(chatId)
-                .setText(chooseRaceMessage);
-        String[] buttonText = {elfButton, humanButton, orcButton};
-        String[] callbackData = {Race.ELF.name(), Race.HUMAN.name(), Race.ORC.name()};
-        InlineKeyboardMarkup markup = ButtonMaker.makeInlineKeyboardMarkup(3, 1, buttonText, callbackData);
-        message.setReplyMarkup(markup);
-        sendMessageInChat(message);
-    }
 
-    private void startCallbackHandler(Update update) {
-        Race race = Race.valueOf(update.getCallbackQuery().getData());
+
+    EditMessageText createEditMessage(Update update, String text) {
         long chatId = update.getCallbackQuery().getMessage().getChatId();
         long messageId = update.getCallbackQuery().getMessage().getMessageId();
         EditMessageText messageNew = new EditMessageText()
                 .setChatId(chatId)
                 .setMessageId((int) messageId)
-                .setText(answerChooseRace);
-
-        sendMessageInChat(messageNew);
+                .setText(text);
+        return messageNew;
     }
 
-    private void sendMessageInChat(BotApiMethod message) {
+    public void sendMessageInChat(BotApiMethod message) {
         try {
             execute(message); // Call method to send the message
         } catch (TelegramApiException e) {
@@ -95,4 +87,7 @@ public class FightBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return Config.TOKEN;
     }
+
+
+
 }
