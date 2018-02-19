@@ -1,13 +1,10 @@
 package com.company.frontend;
 
-import com.company.backend.Race;
+
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.company.ButtonText.elfButton;
 
 public class ButtonMaker {
     public static InlineKeyboardMarkup makeInlineKeyboardMarkup(int numbersOfRows, int numbersOfColumns,
@@ -25,6 +22,6 @@ public class ButtonMaker {
             }
             rowsInLine.add(rowInLine);
         }
-        return markup;
+        return markup.setKeyboard(rowsInLine);
     }
 }
