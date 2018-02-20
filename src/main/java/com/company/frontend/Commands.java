@@ -1,18 +1,5 @@
 package com.company.frontend;
 
-import com.company.FightBot;
-import com.company.backend.Player;
-import com.company.backend.Race;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
-
-import java.util.Map;
-
-import static com.company.SendMessageText.*;
-import static com.company.SendMessageText.cancel;
-import static com.company.SendMessageText.waitingToFight;
-
 public enum Commands {
     START,
     SHOW_ME,

@@ -2,19 +2,16 @@ package com.company;
 
 import com.company.backend.Player;
 import com.company.backend.Race;
-import com.company.frontend.ButtonMaker;
-import com.company.frontend.Commands;
 import com.company.frontend.TextCommander;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.company.SendMessageText.*;
 

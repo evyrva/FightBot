@@ -32,9 +32,9 @@ public class TextCommander {
         }
     }
 
-    public void sendReplyMessage(){
+    public void sendReplyMessage() {
         String textMessage = update.getMessage().getText();
-        if (textMessage.length()<1 || !Commands.isCommands(textMessage.substring(1))){
+        if (textMessage.length() < 1 || !Commands.isCommands(textMessage.substring(1))) {
             sendMessageInChat(createErrorMessage());
             return;
         }
@@ -49,11 +49,24 @@ public class TextCommander {
         switch (commands) {
             case START:
                 sendMessageInChat(createStartMessage());
-            case SHOW_ME: sendMessageInChat(createShowMeMessage());
-            case FIGHT:
-
                 break;
-            default: sendMessageInChat(createErrorMessage());
+            case SHOW_ME:
+                sendMessageInChat(createShowMeMessage());
+                break;
+            case FIGHT:
+                Player partner;
+                if ((partner = getFightWaiting()) != null) {
+                    sendMessageInChat(getSendMessage(partner.getChatId(), startBattle
+                            + players.get(update.getMessage().getFrom().getId()).getNickName()));
+                    sendMessageInChat(getSendMessage(update.getMessage().getChatId(), startBattle
+                            + partner.getNickName()));
+
+                } else {
+                    sendMessageInChat(createFightWaitingMessage());
+                }
+                break;
+            default:
+                sendMessageInChat(createErrorMessage());
         }
 
     }
@@ -83,6 +96,27 @@ public class TextCommander {
         String textMessage = errorText;
         return getSendMessage(chatId, textMessage);
     }
+
+    public Player getFightWaiting() {
+        for (Player player : players.values()) {
+            if (player.isWaitingFight()) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public SendMessage createFightWaitingMessage() {
+        long chatId = update.getMessage().getChatId();
+        String textMessage = waitingToFight;
+        SendMessage sendMessage = getSendMessage(chatId, textMessage);
+        String[] buttonText = {cancel};
+        String[] callbackData = {cancel};
+        InlineKeyboardMarkup markup = ButtonMaker.makeInlineKeyboardMarkup(1, 1, buttonText, callbackData);
+        sendMessage.setReplyMarkup(markup);
+        return sendMessage;
+    }
+
 
     SendMessage getSendMessage(long chatId, String textMessage) {
         SendMessage message = new SendMessage()
