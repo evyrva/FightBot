@@ -16,5 +16,8 @@ public class SendMessageText {
     public static final String canselOperation = "Операция отменена";
     public static final String startBattle = "Началась битва с: ";
     public static final String inBattleYet = "Вы уже в битве";
-
+    public static final String attackMessage = "Выберите место, куда собираетесь нанести удар:";
+    public static final String block1Message = "Выберите первое место, которое хотите заблокировать:";
+    public static final String block2Message = "Выберите второе место, которое хотите заблокировать:";
+    public static final String isShue = "Вы уверены?";
 }

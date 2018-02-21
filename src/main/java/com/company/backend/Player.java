@@ -83,4 +83,20 @@ public class Player {
                 "опыт=" + experience +"\n" +
                 statement +"\n";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+
+        Player player = (Player) o;
+
+        if (playerId != player.playerId) return false;
+        return nickName.equals(player.nickName);
+    }
+
+    @Override
+    public int hashCode() {
+        return playerId;
+    }
 }

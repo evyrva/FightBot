@@ -21,7 +21,7 @@ public enum Commands {
 //
 //            players.get(playerId).setWaitingFight(true);
 //
-//            String textMessage = waitingToFight;
+//            String textMessage = 0;
 //            SendMessage sendMessage = getSendMessage(chatId, textMessage);
 //            String[] buttonText = {cancel};
 //            String[] callbackData = {cancel};

@@ -1,6 +1,8 @@
 package com.company.frontend;
 
 import com.company.FightBot;
+import com.company.backend.Battle;
+import com.company.backend.PartOfBody;
 import com.company.backend.Player;
 import com.company.backend.Race;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
@@ -54,15 +56,19 @@ public class TextCommander {
                 sendMessageInChat(createShowMeMessage());
                 break;
             case FIGHT:
+                Player player = players.get(update.getMessage().getFrom().getId());
+                if (player.getBattle()!=null){
+
+                }
                 Player partner;
                 if ((partner = getFightWaiting()) != null) {
-                    sendMessageInChat(getSendMessage(partner.getChatId(), startBattle
-                            + players.get(update.getMessage().getFrom().getId()).getNickName()));
-                    sendMessageInChat(getSendMessage(update.getMessage().getChatId(), startBattle
-                            + partner.getNickName()));
-
+                    Battle battle = new Battle(player, partner, fightBot);
+                    player.setBattle(battle);
+                    partner.setBattle(battle);
+                    battle.startBattle();
                 } else {
                     sendMessageInChat(createFightWaitingMessage());
+                    player.setWaitingFight(true);
                 }
                 break;
             default:
@@ -107,7 +113,7 @@ public class TextCommander {
     }
 
     public SendMessage createFightWaitingMessage() {
-        long chatId = update.getMessage().getChatId();
+        long chatId =update.hasMessage() ? update.getMessage().getChatId() : update.getCallbackQuery().getMessage().getChatId();
         String textMessage = waitingToFight;
         SendMessage sendMessage = getSendMessage(chatId, textMessage);
         String[] buttonText = {cancel};
@@ -116,6 +122,7 @@ public class TextCommander {
         sendMessage.setReplyMarkup(markup);
         return sendMessage;
     }
+
 
 
     SendMessage getSendMessage(long chatId, String textMessage) {
