@@ -1,5 +1,7 @@
 package com.company.backend;
 
+import static com.company.SendMessageText.*;
+
 public class Player {
     private int playerId;
     private long chatId;
@@ -17,6 +19,26 @@ public class Player {
         this.isWaitingFight = isWaitingFight;
 
     }
+
+    public String hit(Player enemy, PartOfBody partOfBody){
+        String mes = "";
+        double luckCoeff = 1.0;
+        if (this.getRace().equals(Race.HUMAN)){
+            if(this.statement.getLuck() * 1.5 / 100 >= Math.random()) {
+                luckCoeff = 3;
+                mes += this.nickName + criticalDamage;
+            }
+        }
+        if (enemy.getRace().equals(Race.ELF)){
+            luckCoeff = this.statement.getLuck() * 1.5 / 100 >= Math.random() ? 0 : 1;
+            mes += enemy.nickName + dodge;
+        }
+        int damage = (int)(this.statement.getStrength() * luckCoeff);
+        enemy.statement.setCurrentHealth(enemy.statement.getCurrentHealth() - damage);
+        mes += this.nickName + hitText1 + partOfBody.toString() + hitText2 + damage + "\n";
+        return mes;
+    }
+
 
     public int getPlayerId() {
         return playerId;
@@ -60,6 +82,10 @@ public class Player {
 
     public Race getRace() {
         return race;
+    }
+
+    public Statement getStatement() {
+        return statement;
     }
 
     public Battle getBattle() {

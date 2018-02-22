@@ -36,9 +36,24 @@ public enum PartOfBody {
         return out.toArray(new String[PartOfBody.values().length]);
     }
 
+    public static String[] getBodyTextList(PartOfBody partOfBody) {
+        List<String> out = new ArrayList<>();
+        Arrays.stream(PartOfBody.values()).forEach(r ->{
+            if (!r.equals(partOfBody)) out.add(r.toString());
+        });
+        return out.toArray(new String[PartOfBody.values().length]);
+    }
+
     public static String[] getBodyDataList() {
         List<String> out = new ArrayList<>();
         Arrays.stream(PartOfBody.values()).forEach(r -> out.add(r.name()));
+        return out.toArray(new String[PartOfBody.values().length]);
+    }
+    public static String[] getBodyDataList(PartOfBody partOfBody) {
+        List<String> out = new ArrayList<>();
+        Arrays.stream(PartOfBody.values()).forEach(r -> {
+            if (!r.equals(partOfBody)) out.add(r.name());
+        });
         return out.toArray(new String[PartOfBody.values().length]);
     }
 

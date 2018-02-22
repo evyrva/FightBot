@@ -34,9 +34,7 @@ public class FightBot extends TelegramLongPollingBot {
 
         TextCommander textCommander = new TextCommander(update, players, this);
         if (update.hasMessage() && update.getMessage().hasText()) {
-
             textCommander.sendReplyMessage();
-
         } else if (update.hasCallbackQuery()) {
             final String textOfMessage = update.getCallbackQuery().getMessage().getText();
             final String dataOfQuery = update.getCallbackQuery().getData();
@@ -46,17 +44,19 @@ public class FightBot extends TelegramLongPollingBot {
                 int playerId = update.getCallbackQuery().getFrom().getId();
                 players.get(playerId).setRace(race);
                 editMessageText = createEditMessage(update, answerChooseRace);
+                sendMessageInChat(editMessageText);
             }else if (waitingToFight.equals(textOfMessage)){
                 editMessageText = createEditMessage(update, isShue);
                 String[] buttonText = {"Да", "Нет"};
                 String[] buttonData = {"Yes", "No"};
                 editMessageText.setReplyMarkup(ButtonMaker.makeInlineKeyboardMarkup(1,2,buttonText,buttonData));
-
+                sendMessageInChat(editMessageText);
             }else if (isShue.equals(textOfMessage)){
                 System.out.println(dataOfQuery);
                 if(dataOfQuery.equals("Yes")){
                     editMessageText = createEditMessage(update, canselOperation);
                     players.get(update.getCallbackQuery().getFrom().getId()).setWaitingFight(false);
+                    players.get(update.getCallbackQuery().getFrom().getId()).setBattle(null);
                 } else {
                     editMessageText = createEditMessage(update, waitingToFight);
                     String[] buttonText = {cancel};
@@ -64,8 +64,11 @@ public class FightBot extends TelegramLongPollingBot {
                     InlineKeyboardMarkup markup = ButtonMaker.makeInlineKeyboardMarkup(1, 1, buttonText, callbackData);
                     editMessageText.setReplyMarkup(markup);
                 }
+                sendMessageInChat(editMessageText);
+            }else {
+                System.out.println("Battle = " + players.get(update.getCallbackQuery().getFrom().getId()).getBattle());
+                players.get(update.getCallbackQuery().getFrom().getId()).getBattle().runBattle(update);
             }
-            sendMessageInChat(editMessageText);
         }
     }
 

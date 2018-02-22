@@ -7,6 +7,7 @@ import com.company.backend.Player;
 import com.company.backend.Race;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -26,12 +27,13 @@ public class TextCommander {
         this.players = players;
     }
 
-    private void sendMessageInChat(SendMessage sendMessage) {
+    private Message sendMessageInChat(SendMessage sendMessage) {
         try {
-            fightBot.execute(sendMessage); // Call method to send the message
+            return fightBot.execute(sendMessage); // Call method to send the message
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void sendReplyMessage() {
@@ -58,17 +60,23 @@ public class TextCommander {
             case FIGHT:
                 Player player = players.get(update.getMessage().getFrom().getId());
                 if (player.getBattle()!=null){
-
+                    sendMessageInChat(getSendMessage(update.getMessage().getChatId(), inBattleYet));
                 }
                 Player partner;
                 if ((partner = getFightWaiting()) != null) {
-                    Battle battle = new Battle(player, partner, fightBot);
-                    player.setBattle(battle);
-                    partner.setBattle(battle);
-                    battle.startBattle();
+                    partner.setWaitingFight(false);
+                    System.out.println("want to set Battle at player" + player.getNickName());
+                    player.setBattle(partner.getBattle());
+                    System.out.println("set Battle at player" + player.getNickName());
+
+                    partner.getBattle().addFighter(player,sendMessageInChat(createFightWaitingMessage()).getMessageId());
+                    sendMessageInChat(getSendMessage(partner.getChatId(), "Битва началась!!"));
+                    player.getBattle().getFighters().forEach(p -> p.startFirstAttack());
                 } else {
-                    sendMessageInChat(createFightWaitingMessage());
+                    Message msg = sendMessageInChat(createFightWaitingMessage());
                     player.setWaitingFight(true);
+                    System.out.println("Create new battle at player" + player.getNickName());
+                    player.setBattle(new Battle(player, msg.getMessageId(), fightBot));
                 }
                 break;
             default:
