@@ -30,8 +30,10 @@ public class Player {
             }
         }
         if (enemy.getRace().equals(Race.ELF)){
-            luckCoeff = this.statement.getLuck() * 1.5 / 100 >= Math.random() ? 0 : 1;
-            mes += enemy.nickName + dodge;
+            if (this.statement.getLuck() * 1.5 / 100 >= Math.random()) {
+                luckCoeff = 0;
+                mes += enemy.nickName + dodge;
+            }
         }
         int damage = (int)(this.statement.getStrength() * luckCoeff);
         enemy.statement.setCurrentHealth(enemy.statement.getCurrentHealth() - damage);

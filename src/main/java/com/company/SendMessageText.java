@@ -20,7 +20,7 @@ public class SendMessageText {
     public static final String block1Message = "Выберите первое место, которое хотите заблокировать:";
     public static final String block2Message = "Выберите второе место, которое хотите заблокировать:";
     public static final String isShue = "Вы уверены?";
-    public static final String waitingEndOfRounds = "Ждем окончание хода партнера";
+    public static final String waitingEndOfRounds = "Ждем окончания хода партнера";
     public static final String criticalDamage = " повезло и он нанес критический удар!\n";
     public static final String dodge = " проявляет чудеса ловкости и уворачивается от удара\n";
     public static final String hitText1 = " совершает удар в ";

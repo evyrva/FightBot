@@ -41,7 +41,7 @@ public enum PartOfBody {
         Arrays.stream(PartOfBody.values()).forEach(r ->{
             if (!r.equals(partOfBody)) out.add(r.toString());
         });
-        return out.toArray(new String[PartOfBody.values().length]);
+        return out.toArray(new String[out.size()]);
     }
 
     public static String[] getBodyDataList() {
@@ -54,7 +54,7 @@ public enum PartOfBody {
         Arrays.stream(PartOfBody.values()).forEach(r -> {
             if (!r.equals(partOfBody)) out.add(r.name());
         });
-        return out.toArray(new String[PartOfBody.values().length]);
+        return out.toArray(new String[out.size()]);
     }
 
 

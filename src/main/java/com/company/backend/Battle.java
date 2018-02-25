@@ -79,7 +79,10 @@ public class Battle {
             buttonText = PartOfBody.getBodyTextList();
             callBackData = PartOfBody.getBodyDataList();
         } else {
+            System.out.println("Первое место для блокировки :" + fighter.blockBody.toArray(new PartOfBody[1])[0]);
             buttonText = PartOfBody.getBodyTextList(fighter.blockBody.toArray(new PartOfBody[1])[0]);
+            System.out.println("места для второй блокировки;");
+            Arrays.stream(buttonText).forEach(System.out::println);
             callBackData = PartOfBody.getBodyDataList(fighter.blockBody.toArray(new PartOfBody[1])[0]);
         }
         InlineKeyboardMarkup markup = ButtonMaker.makeInlineKeyboardMarkup(buttonText.length, 1, buttonText, callBackData);
@@ -103,7 +106,8 @@ public class Battle {
                 break;
             case block2Message:
                 fighter.blockBody.add(PartOfBody.valueOf(dataOfQuery));
-                fightBot.sendMessageInChat(fighter.startBlock());
+//                fightBot.sendMessageInChat(fighter.startBlock());
+                endOfRound(fighter);
                 break;
         }
     }
@@ -142,13 +146,17 @@ public class Battle {
                     fighter.player.setExperiance(fighter.player.getExperiance() + 2);
                 }else if (partner.player.getStatement().getCurrentHealth() <= 0){
                     sendEditMessage(partner, loserText);
+                    sendEditMessage(fighter, winnerText);
                     fighter.player.setExperiance(fighter.player.getExperiance() + 5);
                 }else if (fighter.player.getStatement().getCurrentHealth() <= 0) {
                     sendEditMessage(fighter, loserText);
+                    sendEditMessage(partner, winnerText);
                     partner.player.setExperiance(partner.player.getExperiance() + 5);
                 }
                 partner.player.setBattle(null);
+                partner.player.getStatement().setCurrentHealth(partner.player.getStatement().getHealth());
                 fighter.player.setBattle(null);
+                fighter.player.getStatement().setCurrentHealth(fighter.player.getStatement().getHealth());
             }else{
                 fighter.startFirstAttack();
                 partner.startFirstAttack();

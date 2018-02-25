@@ -61,6 +61,7 @@ public class TextCommander {
                 Player player = players.get(update.getMessage().getFrom().getId());
                 if (player.getBattle()!=null){
                     sendMessageInChat(getSendMessage(update.getMessage().getChatId(), inBattleYet));
+                    return;
                 }
                 Player partner;
                 if ((partner = getFightWaiting()) != null) {
